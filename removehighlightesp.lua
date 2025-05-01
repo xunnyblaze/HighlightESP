@@ -18,15 +18,14 @@ local function removeAllHighlights()
             removeHighlightsFromCharacter(player.Character)
         end
         player.CharacterAdded:Connect(function(char)
-            char:WaitForChild("HumanoidRootPart", 5)  -- Ensure character is fully loaded
-            -- Wait a moment to ensure highlights have been added before removal
+            char:WaitForChild("HumanoidRootPart", 5)
             task.wait(0.1)
             removeHighlightsFromCharacter(char)
         end)
     end
 end
 
--- Toggle callback function (connected to your Rayfield toggle)
+-- Toggle callback function (to be connected to your Rayfield toggle)
 local function onToggle(value)
     if not value then
         -- If the toggle is off, remove all highlights
