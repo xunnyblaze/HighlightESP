@@ -1,36 +1,37 @@
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local localPlayer = Players.LocalPlayer
 
-local function addHighlightToCharacter(character)
-	if not character then return end
-
-	local old = character:FindFirstChild("Highlight")
-	if old then old:Destroy() end
-
-	local highlight = Instance.new("Highlight")
-	highlight.Name = "Highlight"
-	highlight.FillColor = Color3.fromRGB(255, 0, 0)
-	highlight.OutlineColor = Color3.new(1, 1, 1)
-	highlight.FillTransparency = 0.5
-	highlight.OutlineTransparency = 0
-	highlight.Adornee = character
-	highlight.Parent = character
-end
-
-local function setupPlayer(player)
-	if player == LocalPlayer then return end
-
-	if player.Character then
-		addHighlightToCharacter(player.Character)
-	end
-
-	player.CharacterAdded:Connect(function(character)
-		addHighlightToCharacter(character)
-	end)
+local function highlightCharacter(character)
+    if character and not character:FindFirstChild("Highlight") then
+        local highlight = Instance.new("Highlight")
+        highlight.FillColor = Color3.fromRGB(255, 255, 0) -- Yellow
+        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        highlight.OutlineTransparency = 0
+        highlight.FillTransparency = 0.5
+        highlight.Adornee = character
+        highlight.Parent = character
+    end
 end
 
 for _, player in ipairs(Players:GetPlayers()) do
-	setupPlayer(player)
+    if player ~= localPlayer then
+        player.CharacterAdded:Connect(function(char)
+            -- Wait for character to load
+            char:WaitForChild("HumanoidRootPart", 5)
+            highlightCharacter(char)
+        end)
+        if player.Character then
+            highlightCharacter(player.Character)
+        end
+    end
 end
 
-Players.PlayerAdded:Connect(setupPlayer)
+Players.PlayerAdded:Connect(function(player)
+    if player ~= localPlayer then
+        player.CharacterAdded:Connect(function(char)
+            char:WaitForChild("HumanoidRootPart", 5)
+            highlightCharacter(char)
+        end)
+    end
+end)
