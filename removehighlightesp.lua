@@ -13,26 +13,29 @@ end
 
 -- Function to remove all highlights from all players
 local function removeAllHighlights()
+    -- Loop through all players in the game
     for _, player in ipairs(Players:GetPlayers()) do
         if player.Character then
+            -- Remove highlights from existing characters
             removeHighlightsFromCharacter(player.Character)
         end
+        -- If a new character is added, remove highlights as well
         player.CharacterAdded:Connect(function(char)
+            -- Wait for the character to fully load
             char:WaitForChild("HumanoidRootPart", 5)
-            task.wait(0.1)
+            task.wait(0.1) -- Small delay before attempting to remove highlights
             removeHighlightsFromCharacter(char)
         end)
     end
 end
 
--- Toggle callback function (to be connected to your Rayfield toggle)
+-- Toggle callback function (assuming you already have a toggle setup)
 local function onToggle(value)
     if not value then
-        -- If the toggle is off, remove all highlights
+        -- When toggle is off, remove all highlights
         removeAllHighlights()
     end
 end
 
--- Example usage (replace with your actual toggle logic)
--- Assuming you have a Rayfield toggle that calls `onToggle` with a boolean value
+-- Example: Replace with your actual toggle callback
 -- toggle.Callback = onToggle
